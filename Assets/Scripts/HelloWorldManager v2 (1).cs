@@ -11,21 +11,95 @@ namespace HelloWorld
 
         [SerializeField] private TextMeshProUGUI statusText;
 
+        private bool overrideStatus;
+
+        [SerializeField] private float overrideTimer;
+
+        [SerializeField] private float overrideTime;
+
+        [SerializeField] private GameObject lobbyButton;
+
+
 
         void Update()
         {
+            if (overrideStatus)
+            {
+                overrideTimer -= Time.deltaTime;
+
+                if (overrideTimer <= 0f)
+                {
+                    overrideStatus = false;
+                }
+            }
+
+            if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
+            {
+                lobbyButton.SetActive(false);
+            }
+            else
+            {
+                lobbyButton.SetActive(true);
+            }
+
             UpdateUI();
         }
 
 
-        public void OnHostButtonClicked() {
+
+          public void OnHostButtonClicked()
+        {
+            if (NetworkManager.Singleton.IsHost)
+            {
+                overrideStatus = true;
+                overrideTimer = overrideTime;
+
+                statusText.color = Color.red;
+                statusText.text = "You are already the host!";
+                return;
+            }
+            else if (NetworkManager.Singleton.IsClient)
+            {
+                overrideStatus = true;
+                overrideTimer = overrideTime;
+
+                statusText.color = Color.red;
+                statusText.text = "You are already a client!";
+                return;
+            }
+
+            overrideStatus = false;
             NetworkManager.Singleton.StartHost();
         }
 
+
+
+
         public void OnClientButtonClicked()
         {
+            if (NetworkManager.Singleton.IsHost)
+            {
+                overrideStatus = true;
+                statusText.color = Color.red;
+
+                overrideTimer = overrideTime;
+                statusText.text = "You are already the host!";
+                return;
+            }
+            else if (NetworkManager.Singleton.IsClient)
+            {
+                overrideStatus = true;
+                statusText.color = Color.red;
+
+                   overrideTimer = overrideTime;
+                statusText.text = "You are already a client!";
+                return;
+            }
+
+            overrideStatus = false;
             NetworkManager.Singleton.StartClient();
-        } 
+        }
+
 
 
 
@@ -45,6 +119,7 @@ namespace HelloWorld
      
                 SetStatusText("NOT CONNECTED");
             }
+
             else
             {
   
@@ -58,13 +133,24 @@ namespace HelloWorld
         }
 
 
-        void UpdateStatusLabels()
+       void UpdateStatusLabels()
         {
-            var mode = NetworkManager.Singleton.IsHost ? "Host" : NetworkManager.Singleton.IsServer ? "Server" : "Client";
-            string transport = "Transport: " + NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetType().Name;
-            string modeText = "Mode: " + mode;
-            SetStatusText($"{transport}\n{modeText}");
+
+                if (overrideStatus)
+                  return;
+
+            if (NetworkManager.Singleton.IsHost)
+            {
+                statusText.color = Color.green;
+                statusText.text = "HOST";
+            }
+            else if (NetworkManager.Singleton.IsClient)
+            {
+                statusText.color = Color.green;
+                statusText.text = "CLIENT";
+            }
         }
+
 
     }
 }
