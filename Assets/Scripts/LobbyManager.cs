@@ -53,7 +53,9 @@ public class LobbyManager : NetworkBehaviour
 
         GameObject CreateLobby(string lobbyName)
     {
-        GameObject newLobby = Instantiate(lobbyItemPrefab, contentPosition.transform);
+        GameObject newLobby = Instantiate(lobbyItemPrefab);
+        newLobby.transform.SetParent(contentPosition.transform, false);
+
 
         Transform nameTransform = newLobby.transform.Find("LobbyNameText");
 
@@ -65,14 +67,19 @@ public class LobbyManager : NetworkBehaviour
     }
 
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+        [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     void RequestCreateLobbyServerRpc(string lobbyName)
     {
-
-        NetworkObject lobbyObj = CreateLobby(lobbyName).GetComponent<NetworkObject>();
-
-        lobbyObj.Spawn();
+        CreateLobbyClientRpc(lobbyName);
     }
+
+
+        [Rpc(SendTo.ClientsAndHost)]
+    void CreateLobbyClientRpc(string lobbyName)
+    {
+        CreateLobby(lobbyName);
+    }
+
 
 
     public void OnMakeLobbyButtonClicked()
