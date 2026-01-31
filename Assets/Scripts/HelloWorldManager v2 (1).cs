@@ -116,7 +116,7 @@ namespace HelloWorld
 
             if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
             {
-     
+                statusText.color = Color.red;
                 SetStatusText("NOT CONNECTED");
             }
 
