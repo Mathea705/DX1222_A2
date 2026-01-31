@@ -24,12 +24,7 @@ public class SceneManager : MonoBehaviour
     public void OnLobbyButtonPressed()
     {
 
-        // if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
-        // {
-        //     statusText.color = Color.red;
-        //     statusText.text = "Please select a transport mode!";
-        //     return;
-        // }
+
        lobbyCanvas.SetActive(true);
        menuCanvas.SetActive(false);
     }
