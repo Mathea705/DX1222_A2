@@ -65,10 +65,9 @@ public class LobbyManager : NetworkBehaviour
     }
 
 
-    [ServerRpc]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     void RequestCreateLobbyServerRpc(string lobbyName)
     {
-        CreateLobby(lobbyName);
 
         NetworkObject lobbyObj = CreateLobby(lobbyName).GetComponent<NetworkObject>();
 
