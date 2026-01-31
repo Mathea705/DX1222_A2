@@ -21,7 +21,7 @@ public class LobbyManager : NetworkBehaviour
 
      [Header("Lobby Stuff")]
 
-    public string currLobby;
+    private string currLobby;
 
    private Dictionary<string, int> lobbyCounts = new Dictionary<string, int>();
 
