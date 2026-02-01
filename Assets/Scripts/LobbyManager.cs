@@ -328,6 +328,7 @@ public class LobbyManager : NetworkBehaviour
         else
         {
             RequestJoinLobbyServerRpc(lobbyName);
+            lobbyStatusText.color = Color.green;
             lobbyStatusText.text = "Joined lobby: " + lobbyName;
             currLobby = lobbyName;
             leaveButton.interactable = true;
