@@ -330,6 +330,7 @@ public class LobbyManager : NetworkBehaviour
             RequestJoinLobbyServerRpc(lobbyName);
             lobbyStatusText.text = "Joined lobby: " + lobbyName;
             currLobby = lobbyName;
+            leaveButton.interactable = true;
         }
     }
 
@@ -460,7 +461,7 @@ public class LobbyManager : NetworkBehaviour
             currLobbyPlayerCount = 0;
             startButton.interactable = false;
             leaveButton.interactable = false;
-            lobbyStatusText.color = Color.yellow;
+            lobbyStatusText.color = Color.red;
             lobbyStatusText.text = "Lobby '" + lobbyName + "' was closed!";
         }
 
