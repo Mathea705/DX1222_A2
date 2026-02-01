@@ -249,18 +249,14 @@ public class LobbyManager : NetworkBehaviour
         if (!lobbyCounts.ContainsKey(lobbyName) || lobbyCounts[lobbyName] < maxPlayers)
             return;
 
-        List<ulong> members = lobbyMembers[lobbyName];
-
         RemoveLobbyForNonMembersClientRpc(lobbyName);
-
-        foreach (ulong clientId in members)
-        {
-            LoadGameSceneClientRpc(RpcTarget.Single(clientId, RpcTargetUse.Temp));
-        }
 
         lobbyCounts.Remove(lobbyName);
         lobbyMembers.Remove(lobbyName);
         lobbyHosts.Remove(lobbyName);
+
+
+        NetworkManager.Singleton.SceneManager.LoadScene("GameScene", UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
@@ -280,9 +276,4 @@ public class LobbyManager : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.SpecifiedInParams)]
-    void LoadGameSceneClientRpc(RpcParams rpcParams = default)
-    {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
-    }
 }
