@@ -150,7 +150,6 @@ public class LobbyManager : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     void UpdateLobbyCountClientRpc(string lobbyName, int newCount)
     {
-        // Update local count if we're in this lobby
         if (currLobby == lobbyName)
         {
             currLobbyPlayerCount = newCount;
