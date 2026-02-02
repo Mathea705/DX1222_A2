@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -18,6 +19,8 @@ namespace HelloWorld
         [SerializeField] private float overrideTime;
 
         [SerializeField] private GameObject lobbyButton;
+
+        [SerializeField] private TMP_InputField serverIPInput;
 
 
 
@@ -91,10 +94,21 @@ namespace HelloWorld
                 overrideStatus = true;
                 statusText.color = Color.red;
 
-                   overrideTimer = overrideTime;
+                overrideTimer = overrideTime;
                 statusText.text = "You are already a client!";
                 return;
             }
+
+
+            string serverIP = "127.0.0.1";
+            if (serverIPInput != null && !string.IsNullOrEmpty(serverIPInput.text))
+            {
+                serverIP = serverIPInput.text.Trim();
+            }
+
+        
+            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            transport.SetConnectionData(serverIP, 7777);
 
             overrideStatus = false;
             NetworkManager.Singleton.StartClient();
