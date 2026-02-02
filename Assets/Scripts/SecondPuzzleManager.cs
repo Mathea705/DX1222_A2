@@ -141,6 +141,8 @@ public class SecondPuzzleManager : NetworkBehaviour
             puzzleSolved = true;
             feedbackText.text = "ACCESS GRANTED";
             feedbackText.color = Color.green;
+            currentInput = "";
+            UpdateDisplay();
             Invoke(nameof(CloseKeypad), 1f);
         }
         else
