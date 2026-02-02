@@ -139,22 +139,23 @@ public class SecondPuzzleManager : NetworkBehaviour
         if (success)
         {
             puzzleSolved = true;
-         
             feedbackText.text = "ACCESS GRANTED";
             feedbackText.color = Color.green;
-
-            CloseKeypad();
+            Invoke(nameof(CloseKeypad), 1f);
         }
         else
         {
-            if (feedbackText != null)
-            {
-                feedbackText.text = "ACCESS DENIED";
-                feedbackText.color = Color.red;
-            }
+            feedbackText.text = "ACCESS DENIED";
+            feedbackText.color = Color.red;
             currentInput = "";
             UpdateDisplay();
+            Invoke(nameof(ClearFeedback), 1f);
         }
+    }
+
+    void ClearFeedback()
+    {
+        feedbackText.text = "";
     }
 
     void MoveDoors()
