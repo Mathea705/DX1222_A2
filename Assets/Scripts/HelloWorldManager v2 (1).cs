@@ -36,6 +36,8 @@ namespace HelloWorld
                 }
             }
 
+            if (NetworkManager.Singleton == null || lobbyButton == null) return;
+
             if (!NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
             {
                 lobbyButton.SetActive(false);

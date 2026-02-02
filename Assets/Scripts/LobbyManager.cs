@@ -106,7 +106,8 @@ public class LobbyManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-      
+        if (NetworkManager.Singleton == null) return;
+
         if (!NetworkManager.Singleton.IsListening)
         {
             if (shouldHostGame)
