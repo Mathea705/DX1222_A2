@@ -20,7 +20,6 @@ namespace HelloWorld
 
         [SerializeField] private GameObject lobbyButton;
 
-        [SerializeField] private TMP_InputField serverIPInput;
 
 
 
@@ -101,16 +100,6 @@ namespace HelloWorld
                 return;
             }
 
-
-            string serverIP = "127.0.0.1";
-            if (serverIPInput != null && !string.IsNullOrEmpty(serverIPInput.text))
-            {
-                serverIP = serverIPInput.text.Trim();
-            }
-
-        
-            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            transport.SetConnectionData(serverIP, 7777);
 
             overrideStatus = false;
             NetworkManager.Singleton.StartClient();
