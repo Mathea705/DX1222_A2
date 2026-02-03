@@ -43,7 +43,7 @@ public class ThirdPuzzleManager : NetworkBehaviour
             doorOpenPositions[i] = doors[i].transform.position + doorOpenOffset;
         }
 
-        // Subscribe to changes
+
         networkCode1.OnValueChanged += (old, newVal) => DisplayCode(code1Arrows, newVal.ToString());
         networkCode2.OnValueChanged += (old, newVal) => DisplayCode(code2Arrows, newVal.ToString());
 
