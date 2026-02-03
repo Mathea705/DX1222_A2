@@ -248,7 +248,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   moveSpeed: 5
   mouseSensitivity: 2
-  jumpForce: 15
+  jumpForce: 10
   groundCheckDistance: 1
   playerCamera: {fileID: 391979592191920205}
   playerRenderer: {fileID: 4761282001762044016}
