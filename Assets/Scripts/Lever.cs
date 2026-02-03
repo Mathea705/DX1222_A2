@@ -3,7 +3,7 @@ using UnityEngine;
 public class Lever : MonoBehaviour
 {
 
-    public bool up;
+    private bool up;
 
     [SerializeField] private GameObject handle;
 
