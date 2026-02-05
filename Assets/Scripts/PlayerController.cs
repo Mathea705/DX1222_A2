@@ -11,6 +11,17 @@ public class FirstPersonController : NetworkBehaviour
     [SerializeField] private Camera playerCamera;
     [SerializeField] private Renderer playerRenderer;
     [SerializeField] private Renderer[] hideFromOwner;
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private Transform firePoint;
+
+     
+
+     [SerializeField] private int maxHealth;
+
+     private int currHealth;
+
+    private GameObject playerGun;
+    private bool hasGun = false;
 
     private NetworkVariable<int> playerIndex = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
@@ -22,6 +33,14 @@ public class FirstPersonController : NetworkBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+
+        Transform gunTransform = transform.Find("Gun");
+       
+            playerGun = gunTransform.gameObject;
+            playerGun.SetActive(false);
+
+            currHealth = maxHealth;
+    
     }
 
     public override void OnNetworkSpawn()
@@ -34,7 +53,7 @@ public class FirstPersonController : NetworkBehaviour
 
             foreach (Renderer r in hideFromOwner)
             {
-                if (r != null) r.enabled = false;
+                 r.enabled = false;
             }
         }
         else
@@ -70,6 +89,8 @@ public class FirstPersonController : NetworkBehaviour
     {
         if (!IsOwner) return;
 
+       
+
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
@@ -85,6 +106,15 @@ public class FirstPersonController : NetworkBehaviour
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
+
+        if (Input.GetMouseButtonDown(0) && hasGun)
+        {
+            Vector3 spawnPos = firePoint != null ? firePoint.position : playerCamera.transform.position;
+            Vector3 direction = playerCamera.transform.forward;
+            ShootServerRpc(spawnPos, direction);
+        }
+
+        
     }
     
     void FixedUpdate()
@@ -98,5 +128,37 @@ public class FirstPersonController : NetworkBehaviour
         Vector3 newPosition = rb.position + movement * moveSpeed * Time.fixedDeltaTime;
         
         rb.MovePosition(newPosition);
+    }
+
+    public void EnableGun()
+    {
+        hasGun = true;
+        playerGun.SetActive(true);
+    }
+
+    [Rpc(SendTo.Server)]
+    void ShootServerRpc(Vector3 spawnPos, Vector3 direction)
+    {
+        GameObject bullet = Instantiate(bulletPrefab, spawnPos, Quaternion.LookRotation(direction));
+        bullet.GetComponent<NetworkObject>().Spawn();
+    }
+
+    public void TakeDamage(int damage)
+    {
+        // TODO: PLACEHOLDER DIE FIRST ADD DAMAGE LATER
+        // DieClientRpc();
+        currHealth -= damage;
+
+         if (currHealth <= 0)
+        {
+            DieClientRpc();
+        }
+    
+    }
+
+    [ClientRpc]
+    void DieClientRpc()
+    {
+        gameObject.SetActive(false);
     }
 }
