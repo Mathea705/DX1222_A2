@@ -1,3 +1,4 @@
+using UnityEngine.UI;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ public class FirstPersonController : NetworkBehaviour
     [SerializeField] private Renderer[] hideFromOwner;
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firePoint;
+
+    [SerializeField] private Image healthImage;
 
      
 
@@ -40,6 +43,8 @@ public class FirstPersonController : NetworkBehaviour
             playerGun.SetActive(false);
 
             currHealth = maxHealth;
+
+            healthImage.fillAmount = 1f;
     
     }
 
@@ -89,6 +94,8 @@ public class FirstPersonController : NetworkBehaviour
     {
         if (!IsOwner) return;
 
+        
+
        
 
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
@@ -113,6 +120,8 @@ public class FirstPersonController : NetworkBehaviour
             Vector3 direction = playerCamera.transform.forward;
             ShootServerRpc(spawnPos, direction);
         }
+
+      
 
         
     }
@@ -145,15 +154,23 @@ public class FirstPersonController : NetworkBehaviour
 
     public void TakeDamage(int damage)
     {
-        // TODO: PLACEHOLDER DIE FIRST ADD DAMAGE LATER
-        // DieClientRpc();
         currHealth -= damage;
 
-         if (currHealth <= 0)
+        UpdateHealthClientRpc(currHealth);
+
+        if (currHealth <= 0)
         {
             DieClientRpc();
         }
-    
+    }
+
+    [ClientRpc]
+    void UpdateHealthClientRpc(int newHealth)
+    {
+        // TODO: IT ONLY UPDATES FOR THE CLIENT MAKE THE SERVER SEND THE HEALLTH OF THE CURRENT CLIENT
+        // TO ALL CLIENTS
+        currHealth = newHealth;
+        healthImage.fillAmount = (float)currHealth / maxHealth;
     }
 
     [ClientRpc]

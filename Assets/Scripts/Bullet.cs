@@ -22,6 +22,7 @@ public class Bullet : NetworkBehaviour
     void OnTriggerEnter(Collider other)
     {
         if (!IsServer) return;
+        // Health only gets updated on server
 
         if (other.CompareTag("Player"))
         {
