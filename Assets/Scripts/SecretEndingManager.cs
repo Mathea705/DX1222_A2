@@ -58,6 +58,12 @@ public class SecretEndingManager : NetworkBehaviour
     [ClientRpc]
     void GoodEndingClientRpc()
     {
+        ChatManager chat = FindFirstObjectByType<ChatManager>();
+        chat.enabled = false;
+        GameObject.Find("ChatPanel").SetActive(false);
+        GameObject.Find("InputPanel").SetActive(false);
+        GameObject.Find("ChatInput_InputField").SetActive(false);
+        
         StartCoroutine(FadeToGoodEnding());
     }
 
