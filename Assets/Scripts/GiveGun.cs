@@ -7,8 +7,10 @@ public class GiveGun : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             FirstPersonController controller = other.GetComponent<FirstPersonController>();
-
                 controller.EnableGun();
+
+            SecretEndingManager sem = FindFirstObjectByType<SecretEndingManager>();
+             sem.PlayerGotGun();
             
         }
     }
