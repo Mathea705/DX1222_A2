@@ -11,11 +11,20 @@ public class SecretEndingManager : NetworkBehaviour
 
     private Image deathImage;
     private Camera deathCam;
+    private GameObject endingCanvas;
 
     void Start()
     {
         deathImage = GameObject.Find("DeathPanel").GetComponent<Image>();
         deathCam = GameObject.Find("CameraPosition2").GetComponent<Camera>();
+
+        endingCanvas = GameObject.Find("EndingCanvas");
+        endingCanvas.SetActive(false);
+    }
+
+    public void ShowEndingCanvas()
+    {
+        endingCanvas.SetActive(true);
     }
 
     public void PlayerGotGun()
@@ -91,6 +100,31 @@ public class SecretEndingManager : NetworkBehaviour
         {
             t += Time.deltaTime;
             float a = 1f - (t / 1.5f);
+            deathImage.color = new Color(1f, 1f, 1f, a);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(15f);
+
+ 
+        t = 0f;
+        while (t < 4f)
+        {
+            t += Time.deltaTime;
+            float a = t / 4f;
+            deathImage.color = new Color(1f, 1f, 1f, a);
+            yield return null;
+        }
+
+
+        endingCanvas.SetActive(true);
+
+
+        t = 0f;
+        while (t < 4f)
+        {
+            t += Time.deltaTime;
+            float a = 1f - (t / 4f);
             deathImage.color = new Color(1f, 1f, 1f, a);
             yield return null;
         }

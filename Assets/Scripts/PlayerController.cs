@@ -62,6 +62,7 @@ public class FirstPersonController : NetworkBehaviour
             deathCam = GameObject.Find("CameraPosition").GetComponent<Camera>();
             deathCam.enabled = false;
 
+
     }
 
     public override void OnNetworkSpawn()
@@ -227,6 +228,29 @@ public class FirstPersonController : NetworkBehaviour
         {
             elapsed += Time.deltaTime;
             float alpha = Mathf.Clamp01(1f - elapsed / duration);
+            deathImage.color = new Color(deathImage.color.r, deathImage.color.g, deathImage.color.b, alpha);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(15f);
+
+  
+        elapsed = 0f;
+        while (elapsed < 4f)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = elapsed / 4f;
+            deathImage.color = new Color(deathImage.color.r, deathImage.color.g, deathImage.color.b, alpha);
+            yield return null;
+        }
+
+        FindFirstObjectByType<SecretEndingManager>().ShowEndingCanvas();
+
+        elapsed = 0f;
+        while (elapsed < 4f)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = 1f - (elapsed / 4f);
             deathImage.color = new Color(deathImage.color.r, deathImage.color.g, deathImage.color.b, alpha);
             yield return null;
         }
