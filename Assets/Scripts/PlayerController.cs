@@ -1,6 +1,7 @@
 using UnityEngine.UI;
 using Unity.Netcode;
 using UnityEngine;
+using TMPro;
 
 public class FirstPersonController : NetworkBehaviour
 {
@@ -16,6 +17,9 @@ public class FirstPersonController : NetworkBehaviour
     [SerializeField] private Transform firePoint;
 
     [SerializeField] private Image healthImage;
+    private GameObject deathPanel;
+    private Image deathImage;
+    private Camera deathCam;
 
      
 
@@ -32,6 +36,8 @@ public class FirstPersonController : NetworkBehaviour
     private float xRotation = 0f;
     private bool isGrounded;
 
+    private bool isDead;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -45,7 +51,17 @@ public class FirstPersonController : NetworkBehaviour
             currHealth = maxHealth;
 
             healthImage.fillAmount = 1f;
-    
+
+            isDead = false;
+
+            deathPanel = GameObject.Find("DeathPanel");
+            deathImage = deathPanel.GetComponent<Image>();
+            deathImage.color = new Color(deathImage.color.r, deathImage.color.g, deathImage.color.b, 0f);
+            deathImage.raycastTarget = false;
+
+            deathCam = GameObject.Find("CameraPosition").GetComponent<Camera>();
+            deathCam.enabled = false;
+
     }
 
     public override void OnNetworkSpawn()
@@ -92,11 +108,7 @@ public class FirstPersonController : NetworkBehaviour
     
     void Update()
     {
-        if (!IsOwner) return;
-
-        
-
-       
+        if (!IsOwner || isDead) return;
 
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
@@ -128,8 +140,8 @@ public class FirstPersonController : NetworkBehaviour
     
     void FixedUpdate()
     {
-        if (!IsOwner) return;
-        
+        if (!IsOwner || isDead) return;
+
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
         
@@ -154,13 +166,16 @@ public class FirstPersonController : NetworkBehaviour
 
     public void TakeDamage(int damage)
     {
+        if (isDead) return;
+
         currHealth -= damage;
 
         UpdateHealthClientRpc(currHealth);
 
         if (currHealth <= 0)
         {
-            DieClientRpc();
+            isDead = true;
+            DieClientRpc(playerIndex.Value);
         }
     }
 
@@ -174,8 +189,46 @@ public class FirstPersonController : NetworkBehaviour
     }
 
     [ClientRpc]
-    void DieClientRpc()
+    void DieClientRpc(int deadPlayerIndex)
     {
-        gameObject.SetActive(false);
+        isDead = true;
+
+        ChatManager chat = FindFirstObjectByType<ChatManager>();
+        chat.enabled = false;
+        GameObject.Find("ChatPanel").SetActive(false);
+        GameObject.Find("InputPanel").SetActive(false);
+        GameObject.Find("ChatInput_InputField").SetActive(false);
+
+
+        StartCoroutine(FadeDeathPanel());
+    }
+
+    private System.Collections.IEnumerator FadeDeathPanel()
+    {
+        float duration = 1.0f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Clamp01(elapsed / duration);
+            deathImage.color = new Color(deathImage.color.r, deathImage.color.g, deathImage.color.b, alpha);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(3f);
+
+        playerCamera.enabled = false;
+        deathCam.enabled = true;
+        deathCam.depth = 100;
+
+        elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Clamp01(1f - elapsed / duration);
+            deathImage.color = new Color(deathImage.color.r, deathImage.color.g, deathImage.color.b, alpha);
+            yield return null;
+        }
     }
 }
