@@ -466,6 +466,7 @@ GameObject:
   - component: {fileID: 4761282001762044016}
   - component: {fileID: 2267692657811476082}
   - component: {fileID: 2589559712625450594}
+  - component: {fileID: 9006466997617457247}
   - component: {fileID: 6866999583689849241}
   - component: {fileID: 6024159861977477169}
   - component: {fileID: -3868818804155059315}
@@ -564,7 +565,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2573481000
+  GlobalObjectIdHash: 808327880
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -603,6 +604,20 @@ MonoBehaviour:
   firePoint: {fileID: 4442222015116626633}
   healthImage: {fileID: 453450701070289151}
   maxHealth: 200
+--- !u!114 &9006466997617457247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5431842467674111002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5422114305d5424e94606236a6bf0e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PingSystem
+  ShowTopMostFoldoutHeaderGroup: 1
+  pingPrefab: {fileID: 2238410604168579837, guid: cee6cdd8af23c6f49b6b88879de400b1, type: 3}
 --- !u!136 &6866999583689849241
 CapsuleCollider:
   m_ObjectHideFlags: 0
